@@ -5,7 +5,7 @@ public class Machine {
         Scanner inputScan = new Scanner(System.in);     //Create scanner object
         WashType washType = new WashType();
 
-        washType.applyDiscount(1,20);
+        washType.applyDiscount(1,20);   //test
         System.out.println(washType.getEconomy());
 
 
