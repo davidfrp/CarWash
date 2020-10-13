@@ -5,6 +5,11 @@ public class Machine {
         Scanner inputScan = new Scanner(System.in);     //Create scanner object
         WashType washType = new WashType();
 
+        washType.applyDiscount(1,20);
+        System.out.println(washType.getEconomy());
+
+
+
 
         while(true){
             System.out.println("Please insert your WashCard");
