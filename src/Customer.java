@@ -1,18 +1,19 @@
+import java.util.Random;
+
 public class Customer {
     //Fields
-    private String name;
+    private final String name;
+    private final int id;
+    private final boolean hasFDMMembership;
     private double balance;
-    private int id;
-    private boolean hasFDMMembership;
 
     //Getters
     public String getName() {
         return name;
     }
 
-    public double getBalance() {
-        return balance;
-    }
+    public double getBalance(){
+        return balance; }
 
     public int getId() {
         return id;
@@ -27,11 +28,9 @@ public class Customer {
         this.balance = balance;
     }
 
-    public Customer(String name, double balance, boolean hasFDMMembership) {    //Constructor
+    public Customer(String name, boolean hasFDMMembership, int id) {    //Constructor
         this.name = name;
-        this.balance = balance;
         this.hasFDMMembership = hasFDMMembership;
-        //TODO : Generate random id
+        this.id = id;
     }
-
 }
