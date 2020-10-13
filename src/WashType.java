@@ -2,7 +2,6 @@ public class WashType {
     private double economy = 50;
     private double standard = 80;
     private double deLuxe = 120;
-    private int type;
 
 
     public double getEconomy() {

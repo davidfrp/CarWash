@@ -18,6 +18,4 @@ public class WashCard {
         this.balance = balance;
         this.name = name;
     }
-
-
 }
