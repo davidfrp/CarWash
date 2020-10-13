@@ -45,6 +45,7 @@ public class WashType {
     public void applyDiscount(Customer customer){   //Apply discount to washes
 
         if(!type.equals("DELUXE")){     //If type is not deluxe
+            /* TODO: Uncomment when program is done
             SimpleDateFormat formatter = new SimpleDateFormat("HH");    //Add clock object with only hours
             Date date =  new Date();        //Create date object
             int currentTime = Integer.parseInt(formatter.format(date)); //Parse the formatted time to an int
@@ -56,7 +57,8 @@ public class WashType {
                 if(currentTime < 14){   //If before 14:00
                     price -= price * discount;  //apply discount
                 }
-            }
+            }*/
+            price -= price * discount;  //apply discount //TODO: Delete when program is done
         }
         if(customer.isHasFDMMembership()){ //If customer has FDM membership
             price -= price * discount;  //Apply discount
