@@ -1,4 +1,5 @@
 public class Customer {
+    //Fields
     private String name;
     private double balance;
     private int id;
@@ -26,7 +27,7 @@ public class Customer {
         this.balance = balance;
     }
 
-    public Customer(String name, double balance, boolean hasFDMMembership) {
+    public Customer(String name, double balance, boolean hasFDMMembership) {    //Constructor
         this.name = name;
         this.balance = balance;
         this.hasFDMMembership = hasFDMMembership;

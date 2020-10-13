@@ -1,17 +1,17 @@
 public class Statistics {
-
+    //Fields
     private int economy , deLuxe , standard;
 
 
 
-    @Override
+    @Override   //Override toString to print statistics
     public String toString(){
         return "Economy: " + economy +"\n" +
                 "De Luxe: " + deLuxe +"\n" +
                 "Standard: " + standard;
     }
 
-    public void logWash(WashType  washtype){
+    public void logWash(WashType  washtype){    //Log wash and increase field by one
         switch (washtype.getType()){
             case "ECONOMY":
                 economy++;
@@ -24,7 +24,7 @@ public class Statistics {
                 break;
             default:
                 try {
-                    throw new StatisticsException("Error with adding wash to statistics");
+                    throw new StatisticsException("Error with adding wash to statistics");  //Error exception
                 } catch (StatisticsException e) {
                     e.printStackTrace();
                 }
