@@ -7,7 +7,7 @@ public class Database {
     ArrayList<Admin> adminList = new ArrayList<Admin>();    //Arraylist to store all admins
     ArrayList<WashCard> washCardList = new ArrayList<>();
 
-    private void makeTestData(){
+    public void makeTestData(){
         customerList.addAll(Arrays.asList(
                 new Customer("Jonas", true, setUniqueID()),
                 new Customer("Jacob", false, setUniqueID()),

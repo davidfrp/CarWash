@@ -4,6 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Statistics statistics = new Statistics();
         Database database = new Database();
+        database.makeTestData();
         new Machine(database, statistics);
     }
 }
