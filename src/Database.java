@@ -3,9 +3,9 @@ import java.util.Arrays;
 
 public class Database {
     int currentID = 0;
-    ArrayList<Customer> customerList = new ArrayList<Customer>();   //Arraylist to store all customers
-    ArrayList<Admin> adminList = new ArrayList<Admin>();    //Arraylist to store all admins
-    ArrayList<WashCard> washCardList = new ArrayList<>();
+    ArrayList<Customer> customerList = new ArrayList<Customer>();
+    ArrayList<Admin> adminList = new ArrayList<Admin>();
+    ArrayList<WashCard> washCardList = new ArrayList<WashCard>();
 
     public void makeTestData(){
         customerList.addAll(Arrays.asList(
@@ -23,8 +23,8 @@ public class Database {
         }
     }
 
-    public void setBalanceOfCustomer(int ID){
-
+    public void setBalanceOfCustomer(int ID, double newBalance){
+        getCustomerFromID(ID).setBalance(newBalance);
     }
 
     public Customer getCustomerFromID(int id) {
