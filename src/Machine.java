@@ -14,8 +14,6 @@ public class Machine {
     private boolean hasSelectedItem = false;
     private String[] washTypes = {"Economy", "Standard", "De Luxe"};
 
-    private Wash orderedWash;
-
 
     public Machine(Database database, Statistics statistics) {
         this.database = database;
@@ -147,7 +145,7 @@ public class Machine {
         try {
             return Integer.parseInt(answer);
         } catch (NumberFormatException e) {
-            System.err.println("answer is not a number");
+            //System.err.println("answer is not a number");                 /* USED FOR DEBUG */
         }
         return -1;
     }
@@ -175,6 +173,14 @@ public class Machine {
 
     private String capitalizeString(String string){
         return string.substring(0,1).toUpperCase() + string.substring(1);
+    }
+
+    private void insertWashCard(){
+
+    }
+
+    private Customer getCustomerFromWashCard(WashCard washCard){
+        return database.getCustomerFromID(washCard.getOwnerID());
     }
 
 }
