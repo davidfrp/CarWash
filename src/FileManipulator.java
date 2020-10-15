@@ -29,6 +29,7 @@ public class FileManipulator {
         String pathToFile = "";
 
         JFileChooser loadFileChooser = makeFileChooser("Please insert a wash card.",1);
+        loadFileChooser.requestFocus();
         int selectedFile = loadFileChooser.showOpenDialog(null);
 
         if(selectedFile == JFileChooser.APPROVE_OPTION){                                                                  //if 'open' was pressed.

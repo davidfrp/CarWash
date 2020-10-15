@@ -24,6 +24,7 @@ public class Customer {
     }
 
     //Setters
+    //*sets* the balance
     public void setBalance(double balance) {
         this.balance = balance;
     }

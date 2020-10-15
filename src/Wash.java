@@ -41,13 +41,21 @@ public class Wash {
 
     /* SKAL MÅSKE FLYTTES */
     private void applyDiscount(){
-        if(checkForDiscount(machine)){
+        if(checkForEarlyBirdDiscount()){
+            price -= price * discount;  //Apply discount
+        }
+        if(checkForFDMDiscount(machine)){
             price -= price * discount;  //Apply discount
         }
     }
 
-    private boolean checkForDiscount(Machine machine){
-
+    private boolean checkForFDMDiscount(Machine machine){
+        if(machine.getCurrentCustomer().isHasFDMMembership()){                 //If customer has FDM membership
+            return true;
+        }
+        return false;
+    }
+    private boolean checkForEarlyBirdDiscount(){
         if(type != WashType.DELUXE){
             SimpleDateFormat formatter = new SimpleDateFormat("HH");    //Add clock object with only hours
             Date date =  new Date();                                           //Create date object
@@ -60,15 +68,11 @@ public class Wash {
             // currentTime = 13;                                                /* USED FOR DEBUG */
             if(day > 1 && day < 7){                                            //if weekday
                 if(currentTime < 14){                                          //If before 14:00
-                    applyDiscount();
+                    return true;
                 }
             }
         }
-        if(machine.getCurrentCustomer().isHasFDMMembership()){                 //If customer has FDM membership
-            applyDiscount();
-        }
-
-        return false; //TODO: fix.
+        return false;
     }
 
     //Getters

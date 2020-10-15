@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Machine {
@@ -13,7 +14,6 @@ public class Machine {
     private Scanner menuItemInput = new Scanner(System.in);
 
     private boolean isWashCardInserted = false;
-    private boolean hasSelectedItem = false;
     private String[] washTypes = {"Economy", "Standard", "De Luxe"};
     private WashCard currentWashCard;
     private Customer currentCustomer;
@@ -28,13 +28,20 @@ public class Machine {
     }
 
     private void mainLoop() {
-        System.out.println("Welcome to SuperShine");
-        do {
-            mainMenu();
-        } while (!hasSelectedItem);
+        System.out.println("Welcome to SuperShine carwash.");
+        while (true) {
+            try {
+                mainMenu();
+            } catch (NoSuchElementException e){
+                System.out.println();
+            }
+
+            //menuItemInput.close();
+            //menuItemInput = new Scanner(System.in);
+        }
     }
 
-    private void mainMenu() {
+    private void mainMenu() throws NoSuchElementException{
 
         if (isWashCardInserted) {
             System.out.println("Welcome, " + currentCustomer.getName());
@@ -42,8 +49,8 @@ public class Machine {
             System.out.println("What would you like to do today?");
             System.out.println(makeMenuItems(menuItems));
 
-            String answer = menuItemInput.nextLine().trim();
-            int menuItemAsNumber = checkIfAnswerIsNumber(answer);
+            String answer = menuItemInput.next();
+            int menuItemAsNumber = getAnswerAsNumber(answer);
 
             if (menuItemAsNumber > 0) {
                 switch (menuItemAsNumber) {
@@ -51,11 +58,11 @@ public class Machine {
                         buyCarWashMenu();
                     }
                     case 2 -> {
-                        rechargeBalance();
+                        rechargeBalanceMenu();
                     }
                     default -> {
                         System.out.println("Please select an item from the menu:");
-                        mainMenu();
+                        mainLoop();
                     }
                 }
             } else {
@@ -63,46 +70,121 @@ public class Machine {
                 if (answer.trim().toLowerCase().matches("(\\bbuy\\b)?(\\bcar\\b)?")) {
                     buyCarWashMenu();
                 } else if (answer.trim().toLowerCase().matches("(\\brecharge\\b)?(\\bbalance\\b)?(\\bof\\b)?(\\bcard\\b)?")) {
-                    rechargeBalance();
+                    rechargeBalanceMenu();
 
                 } else {
                     System.out.println("I did not quite understand that.\nPlease select an item from the menu:");
-                    mainMenu();
+                    mainLoop();
                 }
             }
         } else {                                                                                                            //if no washcard has been inserted.
             System.out.println("Please insert your SuperShine Wash Card.");
-
             currentWashCard = insertWashCard();
+
             if(currentWashCard != null){
-                currentCustomer = getCustomerFromWashCard(currentWashCard);
-                isWashCardInserted = true;
+                if(getCustomerFromWashCard(currentWashCard) != null){
+                    currentCustomer = getCustomerFromWashCard(currentWashCard);
+                    isWashCardInserted = true;
+                } else {
+                    System.out.println("The owner has abandoned this particular wash card! Please return card to SuperShine address posted on the back of the card. Thank you.");
+                }
+
             } else {
                 System.out.println("No valid wash card given, please provide an actual wash card, thank you.");
-                mainMenu();
+                mainLoop();
             }
         }
     }
 
-    private void rechargeBalance() {
-        //TODO: rechargebalance.
-        //hasSelectedItem = true;
+    private void rechargeBalanceMenu(){
+        double firstOption = 250.00;
+        double secondOption = 500.00;
+        double thirdOption = 1000.00;
+
+        System.out.println("Please choose amount to recharge your wash card:");
+        System.out.println(makeMenuItems("" + firstOption + " DKK.", "" + secondOption + " DKK.", "" + thirdOption + " DKK.", "Custom Amount"));
+        String input = menuItemInput.next();
+
+        if(getAnswerAsNumber(input)>0 && getAnswerAsNumber(input)<5){
+            switch(getAnswerAsNumber(input)){
+                case 1:
+                    currentCustomer.setBalance(currentCustomer.getBalance() + firstOption);
+                    break;
+                case 2:
+                    currentCustomer.setBalance(currentCustomer.getBalance() + secondOption);
+                    break;
+                case 3:
+                    currentCustomer.setBalance(currentCustomer.getBalance() + thirdOption);
+                    break;
+                case 4:
+                    try{
+                        rechargeBalance(specifyCustomAmount());
+                    } catch (NumberFormatException | NullPointerException e){
+                        System.out.println("No valid amount given.");
+                        System.out.println("Please provide a valid amount.");
+                        rechargeBalanceMenu();
+                    }
+            }
+        } else if(input.matches("[,.]")){
+            switch(input){
+                case "250.0":
+                    rechargeBalance(firstOption);
+                    break;
+                case "500.0":
+                    rechargeBalance(secondOption);
+                    break;
+                case "1000.0":
+                    rechargeBalance(thirdOption);
+                    break;
+            }
+        }
+        else {
+            try{
+                rechargeBalance(specifyCustomAmount());
+            } catch (NumberFormatException | NullPointerException e){
+                System.out.println("No valid amount given.");
+                System.out.println("Please provide a valid amount.");
+                rechargeBalanceMenu();
+            }
+        }
+    }
+
+    private void rechargeBalance(double amount) {
+        currentCustomer.setBalance(currentCustomer.getBalance() + amount);
+    }
+
+
+    private double specifyCustomAmount() throws NumberFormatException, NullPointerException{
+        System.out.println("Please specify custom amount:");
+        String input = menuItemInput.next();
+        if(input.matches("[.,]")){
+            return Double.parseDouble(input);
+        }
+        else{
+            return Integer.parseInt(input);
+        }
     }
 
     private void buyCarWashMenu(){
         Wash currentWash;
         menuItemInput = new Scanner(System.in);
 
-        makeMenuItems(washTypes);
+        System.out.println("Which type of Car Wash would you like?");
+        System.out.println(makeMenuItems(washTypesAsStrings().toArray(new String[WashType.values().length])));
 
         String answer = menuItemInput.nextLine().trim().toUpperCase();
 
-        System.out.println("Which type of Car Wash would you like?");
-        System.out.println(makeMenuItems(washTypesAsStrings().toArray(new String[WashType.values().length])));
         currentWash = buyCarWash(answer); //makes a new wash with applied discounts.
         if(currentWash != null && canBuyCarWash(currentWash)){
             System.out.println("Thank you for choosing superShine.");
             System.out.println("Wash selected: " + capitalizeString(currentWash.getType().toString()));
+        } else if (currentWash != null && !canBuyCarWash(currentWash)){
+            System.out.println("The wash you are trying to buy costs: " + currentWash.getPrice() + " DKK.");
+            System.out.println("Your wash card only has " + currentCustomer.getBalance() + "DKK.");
+            System.out.println("Please recharge your wash card with at least " + (currentWash.getPrice() - currentCustomer.getBalance()) + " DKK. to continue.");
+            mainLoop();
+        } else {
+            System.out.println("ERROR: Wash machine is broken. The wash you have selected appears to have gone missing.");
         }
 
     }
@@ -115,21 +197,18 @@ public class Machine {
     }
 
     private Wash buyCarWash(String answer) {
-        int menuItemAsNumber = checkIfAnswerIsNumber(answer);
+        int menuItemAsNumber = getAnswerAsNumber(answer);
         if (menuItemAsNumber > 0) {
             switch (menuItemAsNumber) {
                 case 1 -> {
-                    hasSelectedItem = true;
                     return new Wash(WashType.ECONOMY, this); }
                 case 2 -> {
-                    hasSelectedItem = true;
                     return new Wash(WashType.STANDARD, this); }
                 case 3 -> {
-                    hasSelectedItem = true;
                     return new Wash(WashType.DELUXE, this); }
                 default -> {
                     System.out.println("Please select an item from the menu:");
-                    mainMenu();
+                    mainLoop();
                 }
             }
         } else {
@@ -138,15 +217,12 @@ public class Machine {
                 WashType.valueOf(answer);
                 switch (WashType.valueOf(answer)) {
                     case ECONOMY -> {
-                        hasSelectedItem = true;
                         return new Wash(WashType.ECONOMY, this);
                     }
                     case STANDARD -> {
-                        hasSelectedItem = true;
                         return new Wash(WashType.STANDARD, this);
                     }
                     case DELUXE -> {
-                        hasSelectedItem = true;
                         return new Wash(WashType.DELUXE, this);
                     }
                 }
@@ -168,7 +244,7 @@ public class Machine {
     }
 
     //C-style check if answer is number. Error results in -1.
-    private int checkIfAnswerIsNumber(String answer) {
+    private int getAnswerAsNumber(String answer) {
         try {
             return Integer.parseInt(answer);
         } catch (NumberFormatException e) {

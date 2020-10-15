@@ -12,6 +12,7 @@ public class Database {
                 new Customer("Jonas", true, setUniqueID()),
                 new Customer("Jacob", false, setUniqueID()),
                 new Customer("David", false, setUniqueID())
+
         ));
 
         adminList.addAll(Arrays.asList(
@@ -21,6 +22,9 @@ public class Database {
         for(Customer customer : customerList){
          washCardList.add(new WashCard(customer.getId()));
         }
+
+        getCustomerFromID(1).setBalance(1000.0);
+        getCustomerFromID(2).setBalance(1000.0);
     }
 
     public void setBalanceOfCustomer(int ID, double newBalance){
@@ -32,10 +36,8 @@ public class Database {
             if (customer.getId() == id) {
                 return customer;
             }
-            else {
-                System.out.println("No customer found with that wash card!");
-            }
         }
+        System.out.println("No customer found!");
         return null;
     }
 
