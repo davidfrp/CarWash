@@ -5,10 +5,13 @@ import java.util.Date;
 public class Wash {
 
     private WashType type = null;
-    private double price;
+    private Machine machine;
+    private double price = 0.0;
     private final double discount = 0.2;
 
-    public Wash(String washType) {
+
+    public Wash(String washType, Machine machine) {
+        this.machine = machine;
         try {
             type = WashType.valueOf(washType.trim().toUpperCase());
         } catch (IllegalArgumentException e){
@@ -17,7 +20,8 @@ public class Wash {
         makePrice();
     }
 
-    public Wash(WashType type) {
+    public Wash(WashType type, Machine machine) {
+        this.machine = machine;
         this.type = type;
         makePrice();
     }
@@ -31,15 +35,18 @@ public class Wash {
             case DELUXE -> price = 120.0;
             default -> System.err.println("Error with making prices");
         }
+        applyDiscount();
     }
 
 
     /* SKAL MÅSKE FLYTTES */
     private void applyDiscount(){
-        price -= price * discount;  //Apply discount
+        if(checkForDiscount(machine)){
+            price -= price * discount;  //Apply discount
+        }
     }
 
-    public void checkForDiscount(Customer customer){
+    private boolean checkForDiscount(Machine machine){
 
         if(type != WashType.DELUXE){
             SimpleDateFormat formatter = new SimpleDateFormat("HH");    //Add clock object with only hours
@@ -57,9 +64,11 @@ public class Wash {
                 }
             }
         }
-        if(customer.isHasFDMMembership()){ //If customer has FDM membership
+        if(machine.getCurrentCustomer().isHasFDMMembership()){                 //If customer has FDM membership
             applyDiscount();
         }
+
+        return false; //TODO: fix.
     }
 
     //Getters

@@ -1,8 +1,10 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Machine {
 
+    private final FileManipulator io;
     private final Database database;
     private final Statistics statistics;
 
@@ -13,9 +15,12 @@ public class Machine {
     private boolean isWashCardInserted = false;
     private boolean hasSelectedItem = false;
     private String[] washTypes = {"Economy", "Standard", "De Luxe"};
+    private WashCard currentWashCard;
+    private Customer currentCustomer;
 
 
-    public Machine(Database database, Statistics statistics) {
+    public Machine(Database database, Statistics statistics, FileManipulator io) {
+        this.io = io;
         this.database = database;
         this.statistics = statistics;
         mainLoop();
@@ -32,6 +37,8 @@ public class Machine {
     private void mainMenu() {
 
         if (isWashCardInserted) {
+            System.out.println("Welcome, " + currentCustomer.getName());
+            System.out.println("Current balance: " + currentCustomer.getBalance() + " DKK.");
             System.out.println("What would you like to do today?");
             System.out.println(makeMenuItems(menuItems));
 
@@ -63,43 +70,63 @@ public class Machine {
                     mainMenu();
                 }
             }
-        } else {
+        } else {                                                                                                            //if no washcard has been inserted.
             System.out.println("Please insert your SuperShine Wash Card.");
-            isWashCardInserted = true;
 
+            currentWashCard = insertWashCard();
+            if(currentWashCard != null){
+                currentCustomer = getCustomerFromWashCard(currentWashCard);
+                isWashCardInserted = true;
+            } else {
+                System.out.println("No valid wash card given, please provide an actual wash card, thank you.");
+                mainMenu();
+            }
         }
     }
 
     private void rechargeBalance() {
-        hasSelectedItem = true;
-        //TODO: recharge balance.
+        //TODO: rechargebalance.
+        //hasSelectedItem = true;
     }
 
     private void buyCarWashMenu(){
-        System.out.println("Which type of Car Wash would you like?");
-        System.out.println(makeMenuItems(washTypesAsStrings().toArray(new String[WashType.values().length])));
-        buyCarWash();
-    }
-
-    private Wash buyCarWash() {
+        Wash currentWash;
         menuItemInput = new Scanner(System.in);
 
         makeMenuItems(washTypes);
 
         String answer = menuItemInput.nextLine().trim().toUpperCase();
-        int menuItemAsNumber = checkIfAnswerIsNumber(answer);
 
+        System.out.println("Which type of Car Wash would you like?");
+        System.out.println(makeMenuItems(washTypesAsStrings().toArray(new String[WashType.values().length])));
+        currentWash = buyCarWash(answer); //makes a new wash with applied discounts.
+        if(currentWash != null && canBuyCarWash(currentWash)){
+            System.out.println("Thank you for choosing superShine.");
+            System.out.println("Wash selected: " + capitalizeString(currentWash.getType().toString()));
+        }
+
+    }
+
+    private boolean canBuyCarWash(Wash wash){
+        if(currentCustomer.getBalance()>=wash.getPrice()){
+            return true;
+        }
+        return false;
+    }
+
+    private Wash buyCarWash(String answer) {
+        int menuItemAsNumber = checkIfAnswerIsNumber(answer);
         if (menuItemAsNumber > 0) {
             switch (menuItemAsNumber) {
                 case 1 -> {
                     hasSelectedItem = true;
-                    return new Wash(WashType.ECONOMY); }
+                    return new Wash(WashType.ECONOMY, this); }
                 case 2 -> {
                     hasSelectedItem = true;
-                    return new Wash(WashType.STANDARD); }
+                    return new Wash(WashType.STANDARD, this); }
                 case 3 -> {
                     hasSelectedItem = true;
-                    return new Wash(WashType.DELUXE); }
+                    return new Wash(WashType.DELUXE, this); }
                 default -> {
                     System.out.println("Please select an item from the menu:");
                     mainMenu();
@@ -112,20 +139,20 @@ public class Machine {
                 switch (WashType.valueOf(answer)) {
                     case ECONOMY -> {
                         hasSelectedItem = true;
-                        return new Wash(WashType.ECONOMY);
+                        return new Wash(WashType.ECONOMY, this);
                     }
                     case STANDARD -> {
                         hasSelectedItem = true;
-                        return new Wash(WashType.STANDARD);
+                        return new Wash(WashType.STANDARD, this);
                     }
                     case DELUXE -> {
                         hasSelectedItem = true;
-                        return new Wash(WashType.DELUXE);
+                        return new Wash(WashType.DELUXE, this);
                     }
                 }
             } else {
                 System.out.println("Please select a Wash Type from the menu:");
-                buyCarWash();
+                buyCarWashMenu();
             }
         }
         return null;
@@ -175,13 +202,26 @@ public class Machine {
         return string.substring(0,1).toUpperCase() + string.substring(1);
     }
 
-    private void insertWashCard(){
-        //TODO: Make file handling for wash card.
+    private WashCard insertWashCard(){
+        String id = null;
+        try {
+            id = io.readFile(0, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        if(id != null){
+            return new WashCard(Integer.parseInt(id));
+        }
+        return null;
     }
 
     private Customer getCustomerFromWashCard(WashCard washCard){
         return database.getCustomerFromID(washCard.getOwnerID());
+    }
+
+    public Customer getCurrentCustomer(){
+        return currentCustomer;
     }
 
 }

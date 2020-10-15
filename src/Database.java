@@ -32,12 +32,11 @@ public class Database {
             if (customer.getId() == id) {
                 return customer;
             }
+            else {
+                System.out.println("No customer found with that wash card!");
+            }
         }
         return null;
-    }
-
-    public String getNameFromID(int id){
-            return getCustomerFromID(id).getName();
     }
 
     public ArrayList<Customer> getCustomersByName(String name){
