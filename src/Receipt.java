@@ -1,5 +1,6 @@
 public class Receipt {
-    Wash wash;
+    private Wash wash;
+    private final int desiredLength = 32;
 
     private String makeLogo() {
         return  "             Thank you for washing your car at\n"+
@@ -23,7 +24,7 @@ public class Receipt {
 
     @Override
     public String toString() {
-        return "" + makeLogo() + "\n" + makeSeparator(23) +
+        return "" + makeLogo() + "\n" + makeSeparator(desiredLength) +
                 "Type of Wash:" + wash.getType().toString() + "\n" +
                 "Price: " + wash.getPrice() + "DKK";
     }

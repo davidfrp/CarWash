@@ -176,6 +176,7 @@ public class Machine {
     }
 
     private void insertWashCard(){
+        //TODO: Make file handling for wash card.
 
     }
 
