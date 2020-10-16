@@ -42,7 +42,8 @@ public class FileManipulator {
 
             if (selectedFile == JFileChooser.APPROVE_OPTION) {                                                                  //if 'open' was pressed.
                 pathToFile = loadFileChooser.getSelectedFile().getAbsolutePath();                                               //get the absolute path to that file.
-                //System.out.println(filename);                                                                               /* used for debug */
+
+                //System.out.println(filename);                                                                                 /* used for debug */
             } else if (selectedFile == JFileChooser.ERROR_OPTION || selectedFile == JFileChooser.CANCEL_OPTION) {               //if user closes the dialog window without pressing open, return null.
                 System.out.println("No Wash Card inserted.\n");
                 return null;

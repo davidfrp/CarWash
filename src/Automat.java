@@ -96,6 +96,10 @@ public class Automat {
         }
     }
 
+    /**
+     * Simulates removing a wash card.
+     *
+     */
     private void removeWashCard() {
         System.out.println("Wash Card can now safely be removed.\n");
         try {
@@ -109,6 +113,10 @@ public class Automat {
         mainLoop();
     }
 
+    /**
+     * This method takes the customer through the workflow of recharging their wash card. Some of the amounts are hard-coded due to switch-cases' preference for static content.
+     * It calls the appropriate methods to print receipts, get credit cards and recharge balance.
+     */
     private void rechargeBalanceMenu() {
         double firstOption = 250.00;
         double secondOption = 500.00;
@@ -235,15 +243,28 @@ public class Automat {
         }
     }
 
+    /**
+     * A setter for the credit card currently being used.
+     * @see CreditCard
+     */
     private void insertCreditCard() {
         creditCard = io.loadCreditCard();
     }
 
+    /**
+     * rechargers the customers balance with a new amount. The amount is added, not replaced.
+     * @param amount the amount to be recharge onto the wash card as a double.
+     */
     private void rechargeBalance(double amount) {
         currentCustomer.setBalance(currentCustomer.getBalance() + amount);
     }
 
-
+    /**
+     * In case the customer wishes to specify a custom amount. This method verifies that it is a number using a regex to split on separators.
+     * @return the custom amount as a double.
+     * @throws NumberFormatException in case the amount cannot be passed to a double
+     * @throws NullPointerException in case the string that is being parsed from {@link System#in} is null (empty string)
+     */
     private double specifyCustomAmount() throws NumberFormatException, NullPointerException {
         System.out.println("Please specify custom amount:");
         String input = menuItemInput.next();
@@ -254,6 +275,9 @@ public class Automat {
         }
     }
 
+    /**
+     * A methode to create a menu for buying a car wash.
+     */
     private void buyCarWashMenu() {
         Wash currentWash;
         menuItemInput = new Scanner(System.in);
@@ -266,6 +290,7 @@ public class Automat {
         currentWash = buyCarWash(answer); //makes a new wash with applied discounts.
         if (currentWash != null && canBuyCarWash(currentWash)) {
             washCar(currentWash);
+            currentCustomer.chargeMoney(currentWash.getPrice());
         } else if (currentWash != null && !canBuyCarWash(currentWash)) {
             System.out.println("The wash you are trying to buy costs: " + currentWash.getPrice() + " DKK.");
             System.out.println("Your wash card only has " + currentCustomer.getBalance() + "DKK.");
@@ -276,6 +301,11 @@ public class Automat {
         }
     }
 
+    /**
+     * Verifies that the customer have enough money on their wash card to buy the desired wash.
+     * @param wash the wash the customer desires
+     * @return
+     */
     private boolean canBuyCarWash(Wash wash) {
         if (currentCustomer.getBalance() >= wash.getPrice()) {
             return true;
@@ -283,6 +313,13 @@ public class Automat {
         return false;
     }
 
+    /**
+     * This method takes some input as a string and first checks whether it can be converted to a number, i.e. if the user got here by using numbers or words.
+     * In either case, this method returns a wash based on the customer's choice.
+     * @param answer a string representing the choice made by the customer.
+     * @return a wash-object based on the selection made by the customer.
+     * @see Wash
+     */
     private Wash buyCarWash(String answer) {
         int menuItemAsNumber = getAnswerAsNumber(answer);
         if (menuItemAsNumber > 0) {
@@ -324,6 +361,11 @@ public class Automat {
         return null;
     }
 
+    /**
+     * This helper method verifies if a string is a value of a {@link WashType} enum.
+     * @param string the string to check up against the types.
+     * @return true if the string is equal to a type, else false.
+     */
     private boolean validateEnumFromString(String string) {
         for (WashType type : WashType.values()) {
             if (string.equals(type.toString())) {
@@ -333,6 +375,11 @@ public class Automat {
         return false;
     }
 
+    /**
+     * This helper method verifies if a string can be converted to an integer.
+     * @param answer the string that is to be converted.
+     * @return If the string can be converted to an int, that int is returned, otherwise it returns -1.
+     */
     //C-style check if answer is number. Error results in -1.
     private int getAnswerAsNumber(String answer) {
         try {
@@ -343,6 +390,12 @@ public class Automat {
         return -1;
     }
 
+    /**
+     * This method lists all the different wash types which are enums in an {@link ArrayList} with strings.
+     * The types are formatted in such a way that the list item's first letter is capitalized.
+     * @return an {@link ArrayList} with strings.
+     * @see ArrayList
+     */
     private ArrayList<String> washTypesAsStrings() {
         ArrayList<String> result = new ArrayList<>();
         for (WashType type : WashType.values()) {
@@ -351,6 +404,12 @@ public class Automat {
         return result;
     }
 
+    /**
+     * Generic helper method that creates a list-like menu with numbers for each item in the menu.
+     * @param item a list of Strings containing the menu-items.
+     * @return The entire menu as a single string, using a {@link StringBuilder}.
+     * @see StringBuilder
+     */
     private String makeMenuItems(String... item) {
         StringBuilder sb = new StringBuilder();
         int i = 1;
@@ -364,10 +423,20 @@ public class Automat {
         return sb.toString();
     }
 
+    /**
+     * Simple helper method that splits a string in two and capitalizes the first letter.
+     * @param string The string that needs to be capitalized.
+     * @return The combined string with the first letter capitalized.
+     */
     private String capitalizeString(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
+    /**
+     * This method tries to get a {@link WashCard} from a {@link FileManipulator}.
+     * @return the {@link WashCard}
+     * @see FileManipulator#readFile(int, boolean)
+     */
     private WashCard insertWashCard() {
         String id = null;
         try {
@@ -382,14 +451,30 @@ public class Automat {
         return null;
     }
 
+    /**
+     * Retrieves the owner of a wash card as a customer-object.
+     * @param washCard
+     * @return A customer-object representing the owner of the wash card.
+     */
     private Customer getCustomerFromWashCard(WashCard washCard) {
         return database.getCustomerFromID(washCard.getOwnerId());
     }
 
+    /**
+     * Gets the current customer.
+     * @return the current customer-object.
+     */
     public Customer getCurrentCustomer() {
         return currentCustomer;
     }
 
+    /**
+     * A text-based progressbar using recursion.
+     * In this itereation of the method, i *MUST* be 0 and symbol *MUST* be '#' to work.
+     * (This method is in its early stages.)
+     * @param i the progress bar goes from this number up to 20 in length. This must be 0(!).
+     * @param symbol What symbol to add to the progress bar. For the progress bar to not expand exponentially, the actual symbol is hard-coded(!) and must be '#'.
+     */
     //i must be 0 and symbol must be '#'.....
     private void progressBar(int i, String symbol) {
         if (i <= 20) {
@@ -403,6 +488,10 @@ public class Automat {
         }
     }
 
+    /**
+     * customAmount is a helper method to the use case where a customer selects a custom amount to recharge their wash card.
+     * It prints out the necessary text to the console as well as gives the customer a receipt and recharges the customer's balance.
+     */
     private void customAmount() {
         System.out.println("You have chosen a custom amount.");
         try {
@@ -430,6 +519,11 @@ public class Automat {
         }
     }
 
+    /**
+     * washCar is a helper method to simulate a car wash in the console.
+     * Besides printing to the console it also has the responsibility of giving a receipt to the customer.
+     * @param currentWash
+     */
     private void washCar(Wash currentWash) {
         System.out.println("Thank you for choosing superShine.");
         System.out.println("Wash selected: " + capitalizeString(currentWash.getType().toString()));
@@ -473,6 +567,5 @@ public class Automat {
         System.out.println();
         System.out.println("Car wash done.");
         System.out.println("\n"); //newLine
-        currentCustomer.chargeMoney(currentWash.getPrice());
     }
 }
