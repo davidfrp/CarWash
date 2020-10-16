@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Machine {
+public class Automat {
     public static void main(String[] args) {
         Scanner inputScan = new Scanner(System.in);
         while (true) {  //Machine should never turn off
