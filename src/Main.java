@@ -15,6 +15,7 @@ public class Main {
                     fileManipulator.writeFile("test_card_2.washcard", "2", true);
                     fileManipulator.writeFile("test_card_3.washcard", "3", true);
                     fileManipulator.writeFile("test_card_4.washcard", "4", true);
+                    fileManipulator.writeFile("test_card_5.washcard", "5", true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

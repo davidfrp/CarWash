@@ -9,9 +9,9 @@ public class Database {
     public void makeTestData(){
         customerList.addAll(Arrays.asList(
                 new Customer("Jonas", true, 1),
-                new Customer("Jacob", false, 2),
-                new Customer("David", false, 3)
-
+                new Customer("Jacob", true, 2),
+                new Customer("David", false, 3),
+                new Customer("Andreas", false, 4)
         ));
 
         administratorList.addAll(Arrays.asList(
@@ -24,7 +24,9 @@ public class Database {
         }
 
         getCustomerFromID(1).setBalance(1000.0);
-        getCustomerFromID(2).setBalance(1000.0);
+        getCustomerFromID(2).setBalance(500.0);
+        getCustomerFromID(3).setBalance(12.0);
+
     }
     //SETS the balance.
     public void setBalanceOfCustomer(int ID, double newBalance){
