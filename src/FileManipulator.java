@@ -28,21 +28,25 @@ public class FileManipulator {
     public String readFile(int lineNumber, boolean decoded) throws IOException {     //read from file
         String pathToFile = "";
 
-        if(System.getProperty("os.name").equals("Mac OS X")){
-            makeFileDialog("Please insert a wash card.", FileDialog.LOAD, "card");
-        }
+        if (System.getProperty("os.name").equals("Mac OS X")) {
+            FileDialog fd = makeFileDialog("Please insert a wash card.", FileDialog.LOAD, "card");
+            pathToFile = fd.getFile();
+            if (pathToFile == "") {
+                System.out.println("Window was closed. No wash card was inserted");
+            }
+        } else {
+            JFileChooser loadFileChooser = makeJFileChooser("Please insert a wash card.", 1);
+            loadFileChooser.setFileFilter(new FileNameExtensionFilter(washCardFileNameSuggestion, washCardFileNameExtension));
+            loadFileChooser.requestFocus();
+            int selectedFile = loadFileChooser.showOpenDialog(null);
 
-        JFileChooser loadFileChooser = makeJFileChooser("Please insert a wash card.", 1);
-        loadFileChooser.setFileFilter(new FileNameExtensionFilter(washCardFileNameSuggestion, washCardFileNameExtension));
-        loadFileChooser.requestFocus();
-        int selectedFile = loadFileChooser.showOpenDialog(null);
-
-        if (selectedFile == JFileChooser.APPROVE_OPTION) {                                                                  //if 'open' was pressed.
-            pathToFile = loadFileChooser.getSelectedFile().getAbsolutePath();                                               //get the absolute path to that file.
-            //System.out.println(filename);                                                                               /* used for debug */
-        } else if (selectedFile == JFileChooser.ERROR_OPTION || selectedFile == JFileChooser.CANCEL_OPTION) {               //if user closes the dialog window without pressing open, return null.
-            System.out.println("No Wash Card inserted.\n");
-            return null;
+            if (selectedFile == JFileChooser.APPROVE_OPTION) {                                                                  //if 'open' was pressed.
+                pathToFile = loadFileChooser.getSelectedFile().getAbsolutePath();                                               //get the absolute path to that file.
+                //System.out.println(filename);                                                                               /* used for debug */
+            } else if (selectedFile == JFileChooser.ERROR_OPTION || selectedFile == JFileChooser.CANCEL_OPTION) {               //if user closes the dialog window without pressing open, return null.
+                System.out.println("No Wash Card inserted.\n");
+                return null;
+            }
         }
 
         List<String> fileLines = Files.readAllLines(Paths.get(pathToFile), StandardCharsets.UTF_8);
@@ -103,16 +107,16 @@ public class FileManipulator {
                 filename = fileToSave.getAbsolutePath();
             }
 
-                if (!filename.endsWith("text")) {                                                         //in case the file the user specified does *not* end with file-ending, the program adds the file-ending (Windows like file-endings).
-                    filename = fileToSave.getAbsolutePath() + ".text";
-                }
+            if (!filename.endsWith("text")) {                                                         //in case the file the user specified does *not* end with file-ending, the program adds the file-ending (Windows like file-endings).
+                filename = fileToSave.getAbsolutePath() + ".text";
+            }
 
-                try {
-                    writeFile(filename, input, false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (selectedFile == JFileChooser.CANCEL_OPTION | selectedFile == JFileChooser.ERROR_OPTION) {                  //if the user pressed cancel or close...
+            try {
+                writeFile(filename, input, false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (selectedFile == JFileChooser.CANCEL_OPTION | selectedFile == JFileChooser.ERROR_OPTION) {                  //if the user pressed cancel or close...
                 System.out.println("Window was closed. No receipt printed.");
             }
         }
@@ -134,11 +138,11 @@ public class FileManipulator {
         String filename = "";
         CreditCard loadedCreditCard;
 
-        if(System.getProperty("os.name").equals("Mac OS X")){
+        if (System.getProperty("os.name").equals("Mac OS X")) {
 
             FileDialog fd = makeFileDialog("Please insert your credit card.", FileDialog.LOAD, "card");
             filename = fd.getFile();
-            if(filename==""){
+            if (filename == "") {
                 System.out.println("Window was closed. No credit card was inserted.");
                 return null;
             }
@@ -170,11 +174,11 @@ public class FileManipulator {
         }
     }
 
-    private FileDialog makeFileDialog(String dialogTitle, int dialogtype, String ending){
+    private FileDialog makeFileDialog(String dialogTitle, int dialogtype, String ending) {
         FileDialog fd = new FileDialog(new JFrame(), dialogTitle, dialogtype);
         fd.setDirectory(userHome);
         fd.setVisible(true);
-        fd.setFilenameFilter((dir,name) -> name.endsWith(ending));
+        fd.setFilenameFilter((dir, name) -> name.endsWith(ending));
         return fd;
     }
 
