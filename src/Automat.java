@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class Machine {
+public class Automat {
     private CreditCard creditCard = null;
     private final FileManipulator io;
     private final Database database;
@@ -21,7 +21,7 @@ public class Machine {
     private Customer currentCustomer;
 
 
-    public Machine(Database database, Statistics statistics, FileManipulator io) {
+    public Automat(Database database, Statistics statistics, FileManipulator io) {
         this.io = io;
         this.database = database;
         this.statistics = statistics;

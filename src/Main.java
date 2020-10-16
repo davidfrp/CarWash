@@ -1,6 +1,4 @@
-import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -28,7 +26,7 @@ public class Main {
             Statistics statistics = new Statistics();
             Database database = new Database();
             database.makeTestData();
-            new Machine(database, statistics, fileManipulator);
+            new Automat(database, statistics, fileManipulator);
         }
     }
 

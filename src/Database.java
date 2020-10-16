@@ -3,7 +3,7 @@ import java.util.Arrays;
 
 public class Database {
     ArrayList<Customer> customerList = new ArrayList<Customer>();
-    ArrayList<Admin> adminList = new ArrayList<Admin>();
+    ArrayList<Administrator> administratorList = new ArrayList<Administrator>();
     ArrayList<WashCard> washCardList = new ArrayList<WashCard>();
 
     public void makeTestData(){
@@ -14,9 +14,9 @@ public class Database {
 
         ));
 
-        adminList.addAll(Arrays.asList(
-                new Admin("Hackerman"),
-                new Admin("Neo")
+        administratorList.addAll(Arrays.asList(
+                new Administrator("Hackerman"),
+                new Administrator("Neo")
         ));
 
         for(Customer customer : customerList){

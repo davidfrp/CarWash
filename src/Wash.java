@@ -5,13 +5,13 @@ import java.util.Date;
 public class Wash {
 
     private WashType type = null;
-    private Machine machine;
+    private Automat automat;
     private double price = 0.0;
     private final double discount = 0.2;
 
 
-    public Wash(String washType, Machine machine) {
-        this.machine = machine;
+    public Wash(String washType, Automat automat) {
+        this.automat = automat;
         try {
             type = WashType.valueOf(washType.trim().toUpperCase());
         } catch (IllegalArgumentException e){
@@ -20,8 +20,8 @@ public class Wash {
         makePrice();
     }
 
-    public Wash(WashType type, Machine machine) {
-        this.machine = machine;
+    public Wash(WashType type, Automat automat) {
+        this.automat = automat;
         this.type = type;
         makePrice();
     }
@@ -39,7 +39,7 @@ public class Wash {
 
     /* Could possible be in Machine */
     private void applyDiscount(){
-        if(checkForFDMDiscount(machine)){
+        if(checkForFDMDiscount(automat)){
             System.out.println("As a member of FDM, you will get a special FDM discount.");
             price -= price * discount;  //Apply discount
         }
@@ -49,8 +49,8 @@ public class Wash {
         }
     }
 
-    private boolean checkForFDMDiscount(Machine machine){
-        if(machine.getCurrentCustomer().isHasFDMMembership()){                 //If customer has FDM membership
+    private boolean checkForFDMDiscount(Automat automat){
+        if(automat.getCurrentCustomer().hasFDMMembership()){                 //If customer has FDM membership
             return true;
         }
         return false;

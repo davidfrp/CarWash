@@ -19,7 +19,7 @@ public class Customer {
         return id;
     }
 
-    public boolean isHasFDMMembership() {
+    public boolean hasFDMMembership() {
         return hasFDMMembership;
     }
 
