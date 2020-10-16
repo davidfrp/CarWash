@@ -2,21 +2,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Database {
-    int currentID = 0;
     ArrayList<Customer> customerList = new ArrayList<Customer>();
     ArrayList<Admin> adminList = new ArrayList<Admin>();
     ArrayList<WashCard> washCardList = new ArrayList<WashCard>();
 
     public void makeTestData(){
         customerList.addAll(Arrays.asList(
-                new Customer("Jonas", true, setUniqueID()),
-                new Customer("Jacob", false, setUniqueID()),
-                new Customer("David", false, setUniqueID())
+                new Customer("Jonas", true, 1),
+                new Customer("Jacob", false, 2),
+                new Customer("David", false, 3)
 
         ));
 
         adminList.addAll(Arrays.asList(
-                new Admin("Hackerman")
+                new Admin("Hackerman"),
+                new Admin("Neo")
         ));
 
         for(Customer customer : customerList){
@@ -26,7 +26,7 @@ public class Database {
         getCustomerFromID(1).setBalance(1000.0);
         getCustomerFromID(2).setBalance(1000.0);
     }
-
+    //SETS the balance.
     public void setBalanceOfCustomer(int ID, double newBalance){
         getCustomerFromID(ID).setBalance(newBalance);
     }
@@ -51,8 +51,4 @@ public class Database {
         return result;
     }
 
-
-    private int setUniqueID(){
-        return currentID++;
-    }
 }

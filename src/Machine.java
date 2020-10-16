@@ -1,15 +1,17 @@
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Machine {
-
+    private CreditCard creditCard = null;
     private final FileManipulator io;
     private final Database database;
     private final Statistics statistics;
 
-    private final String[] menuItems = {"Buy Car Wash", "Recharge Balance of Wash Card"};
+    private final String[] menuItems = {"Buy Car Wash", "Recharge Balance of Wash Card", "Remove Wash Card."};
 
     private Scanner menuItemInput = new Scanner(System.in);
 
@@ -33,11 +35,8 @@ public class Machine {
             try {
                 mainMenu();
             } catch (NoSuchElementException e){
-                System.out.println();
+                System.err.println("No valid option chosen.");
             }
-
-            //menuItemInput.close();
-            //menuItemInput = new Scanner(System.in);
         }
     }
 
@@ -60,6 +59,9 @@ public class Machine {
                     case 2 -> {
                         rechargeBalanceMenu();
                     }
+                    case 3 -> {
+                        removeWashCard();
+                    }
                     default -> {
                         System.out.println("Please select an item from the menu:");
                         mainLoop();
@@ -78,7 +80,7 @@ public class Machine {
                 }
             }
         } else {                                                                                                            //if no washcard has been inserted.
-            System.out.println("Please insert your SuperShine Wash Card.");
+            System.out.println("Please insert your SuperShine Wash Card.\n");
             currentWashCard = insertWashCard();
 
             if(currentWashCard != null){
@@ -96,6 +98,19 @@ public class Machine {
         }
     }
 
+    private void removeWashCard() {
+        System.out.println("Wash Card can now safely be removed.\n");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        currentWashCard = null;
+        currentCustomer = null;
+        isWashCardInserted = false;
+        mainLoop();
+    }
+
     private void rechargeBalanceMenu(){
         double firstOption = 250.00;
         double secondOption = 500.00;
@@ -108,45 +123,83 @@ public class Machine {
         if(getAnswerAsNumber(input)>0 && getAnswerAsNumber(input)<5){
             switch(getAnswerAsNumber(input)){
                 case 1:
-                    currentCustomer.setBalance(currentCustomer.getBalance() + firstOption);
+                    rechargeBalance(firstOption);
+                    System.out.println("You have chosen " + firstOption + "DKK.");
+                    System.out.println("Please insert your credit card.");
+                    if(creditCard == null){
+                        insertCreditCard();
+                    }
+                    if(creditCard != null){
+                        io.writeFileAtSpecificLocation(new Receipt(firstOption, creditCard, false).toString());
+                        creditCard = null;
+                    }
                     break;
                 case 2:
-                    currentCustomer.setBalance(currentCustomer.getBalance() + secondOption);
+                    rechargeBalance(secondOption);
+                    System.out.println("You have chosen " + secondOption + "DKK.");
+                    System.out.println("Please insert your credit card.");
+                    if(creditCard == null){
+                        insertCreditCard();
+                    }
+                    if(creditCard != null){
+                        io.writeFileAtSpecificLocation(new Receipt(secondOption, creditCard, false).toString());
+                        creditCard = null;
+                    }
                     break;
                 case 3:
-                    currentCustomer.setBalance(currentCustomer.getBalance() + thirdOption);
+                    System.out.println("You have chosen " + thirdOption + "DKK.");
+                    System.out.println("Please insert your credit card.");
+                    rechargeBalance(thirdOption);
+                    if(creditCard == null){
+                        insertCreditCard();
+                    }
+                    if(creditCard != null) {
+                        io.writeFileAtSpecificLocation(new Receipt(thirdOption, creditCard, false).toString());
+                        creditCard = null;
+                    }
                     break;
                 case 4:
-                    try{
-                        rechargeBalance(specifyCustomAmount());
-                    } catch (NumberFormatException | NullPointerException e){
-                        System.out.println("No valid amount given.");
-                        System.out.println("Please provide a valid amount.");
-                        rechargeBalanceMenu();
-                    }
+                    customAmount();
+                    break;
             }
         } else if(input.matches("[,.]")){
             switch(input){
                 case "250.0":
                     rechargeBalance(firstOption);
+                    if(creditCard == null){
+                        insertCreditCard();
+                    }
+                    if(creditCard != null) {
+                        io.writeFileAtSpecificLocation(new Receipt(firstOption, creditCard, false).toString());
+                    }
                     break;
                 case "500.0":
                     rechargeBalance(secondOption);
+                    if(creditCard == null){
+                        insertCreditCard();
+                    }
+                    if(creditCard != null) {
+                        io.writeFileAtSpecificLocation(new Receipt(secondOption, creditCard, false).toString());
+                    }
                     break;
-                case "1000.0":
+                case "1000.0" :
                     rechargeBalance(thirdOption);
+                    if(creditCard == null){
+                        insertCreditCard();
+                    }
+                    if(creditCard != null) {
+                        io.writeFileAtSpecificLocation(new Receipt(thirdOption, creditCard, false).toString());
+                    }
                     break;
             }
         }
         else {
-            try{
-                rechargeBalance(specifyCustomAmount());
-            } catch (NumberFormatException | NullPointerException e){
-                System.out.println("No valid amount given.");
-                System.out.println("Please provide a valid amount.");
-                rechargeBalanceMenu();
-            }
+            customAmount();
         }
+    }
+
+    private void insertCreditCard() {
+        creditCard = io.loadCreditCard();
     }
 
     private void rechargeBalance(double amount) {
@@ -176,8 +229,7 @@ public class Machine {
 
         currentWash = buyCarWash(answer); //makes a new wash with applied discounts.
         if(currentWash != null && canBuyCarWash(currentWash)){
-            System.out.println("Thank you for choosing superShine.");
-            System.out.println("Wash selected: " + capitalizeString(currentWash.getType().toString()));
+            washCar(currentWash);
         } else if (currentWash != null && !canBuyCarWash(currentWash)){
             System.out.println("The wash you are trying to buy costs: " + currentWash.getPrice() + " DKK.");
             System.out.println("Your wash card only has " + currentCustomer.getBalance() + "DKK.");
@@ -186,7 +238,6 @@ public class Machine {
         } else {
             System.out.println("ERROR: Wash machine is broken. The wash you have selected appears to have gone missing.");
         }
-
     }
 
     private boolean canBuyCarWash(Wash wash){
@@ -300,4 +351,83 @@ public class Machine {
         return currentCustomer;
     }
 
+    private void progressBar(int i, String symbol) {
+        if(i<=20){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.print("[" + symbol + "] " + i*5 + "%\r");
+            progressBar(i+1, "#" + symbol);
+        }
+    }
+
+    private void washCar(Wash currentWash){
+        System.out.println("Thank you for choosing superShine.");
+        System.out.println("Wash selected: " + capitalizeString(currentWash.getType().toString()));
+        System.out.println("Printing receipt...");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        io.writeFileAtSpecificLocation(new Receipt(currentWash, true).toString());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.print("Car wash starting in 3\r");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.print("Car wash starting in 2\r");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.print("Car wash starting in 1\r");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.print("Car wash starting now\r");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        progressBar(0,"#");
+        System.out.println();
+        System.out.println("Car wash done.");
+        System.out.println("\n"); //newLine
+        currentCustomer.chargeMoney(currentWash.getPrice());
+    }
+
+    private void customAmount(){
+        System.out.println("You have chosen a custom amount.");
+        try{
+            double specifiedAmount = specifyCustomAmount();
+            System.out.println("You are about to recharge your wash card with " + specifiedAmount + " DKK.");
+            System.out.println("Please insert your credit card.");
+            if(creditCard == null){
+                insertCreditCard();
+            }
+            if(creditCard != null) {
+                System.out.println("Printing out receipt.");
+                io.writeFileAtSpecificLocation(new Receipt(specifiedAmount, creditCard, false).toString());
+            }
+            rechargeBalance(specifiedAmount);
+            System.out.println(); //new line.
+        } catch (NumberFormatException | NullPointerException e){
+            System.out.println("No valid amount given.");
+            System.out.println("Please provide a valid amount.");
+            rechargeBalanceMenu();
+        }
+    }
 }

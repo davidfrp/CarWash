@@ -34,4 +34,8 @@ public class Customer {
         this.hasFDMMembership = hasFDMMembership;
         this.id = id;
     }
+
+    public void chargeMoney(double amount){
+        balance -= amount;
+    }
 }

@@ -27,7 +27,6 @@ public class Wash {
     }
 
 
-
     private void makePrice(){
         switch (type) {
             case ECONOMY -> price = 50.0;
@@ -38,13 +37,14 @@ public class Wash {
         applyDiscount();
     }
 
-
-    /* SKAL MÅSKE FLYTTES */
+    /* Could possible be in Machine */
     private void applyDiscount(){
-        if(checkForEarlyBirdDiscount()){
+        if(checkForFDMDiscount(machine)){
+            System.out.println("As a member of FDM, you will get a special FDM discount.");
             price -= price * discount;  //Apply discount
         }
-        if(checkForFDMDiscount(machine)){
+        if(checkForEarlyBirdDiscount()){
+            System.out.println("Congratulations! You are eligible for our early bird discount!");
             price -= price * discount;  //Apply discount
         }
     }
@@ -74,6 +74,7 @@ public class Wash {
         }
         return false;
     }
+
 
     //Getters
     public WashType getType() {
