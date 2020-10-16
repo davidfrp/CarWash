@@ -18,7 +18,12 @@ public class Automat {
     private WashCard currentWashCard;
     private Customer currentCustomer;
 
-
+    /**
+     * The constructor that takes all the objects it uses and assigns them to fields that are used by other methods.
+     * @param database the database that holds the programs data.
+     * @param statistics statistics used by {@link Administrator}s
+     * @param io the {@link FileManipulator} that runs I/O
+     */
     public Automat(Database database, Statistics statistics, FileManipulator io) {
         this.io = io;
         this.database = database;
@@ -27,6 +32,9 @@ public class Automat {
 
     }
 
+    /**
+     * A wrapper method for the main loop.
+     */
     private void mainLoop() {
         System.out.println("Welcome to SuperShine carwash.");
         while (true) {
@@ -38,6 +46,11 @@ public class Automat {
         }
     }
 
+    /**
+     * The main menu of the program. Uses {@link Scanner}s and switch cases to take the Customer through the menus.
+     * @throws NoSuchElementException
+     * @see Scanner
+     */
     private void mainMenu() throws NoSuchElementException {
 
         if (isWashCardInserted) {
@@ -98,7 +111,7 @@ public class Automat {
 
     /**
      * Simulates removing a wash card.
-     *
+     * resets local fields.
      */
     private void removeWashCard() {
         System.out.println("Wash Card can now safely be removed.\n");
