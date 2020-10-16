@@ -6,11 +6,11 @@ public class WashCard {
 
     /**
      * A car wash WashCard.
-     * @param ownerID the customer id of the owner.
+     * @param ownerId the customer id of the owner.
      */
-    public WashCard(int ownerID) {
-        this.ownerId = ownerID;
-        this.cardId = generateCardID();
+    public WashCard(int ownerId) {
+        this.ownerId = ownerId;
+        this.cardId = generateCardId();
     }
 
     /**
@@ -18,7 +18,7 @@ public class WashCard {
      * TODO: make id generation return unique ids.
      * @return random id.
      */
-    private long generateCardID() {
+    private long generateCardId() {
         return new Random().nextLong();
     }
 
