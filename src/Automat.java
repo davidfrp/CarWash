@@ -1,7 +1,5 @@
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -385,7 +383,7 @@ public class Automat {
     }
 
     private Customer getCustomerFromWashCard(WashCard washCard) {
-        return database.getCustomerFromID(washCard.getOwnerID());
+        return database.getCustomerFromID(washCard.getOwnerId());
     }
 
     public Customer getCurrentCustomer() {
