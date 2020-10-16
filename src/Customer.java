@@ -12,7 +12,7 @@ public class Customer {
      * @param hasFDMMembership whether the customer has a FDM membership.
      * @param id               the id of the customer.
      */
-    public Customer(String name, boolean hasFDMMembership, int id) {    //Constructor
+    public Customer(String name, boolean hasFDMMembership, int id) {
         this.name = name;
         this.hasFDMMembership = hasFDMMembership;
         this.id = id;
