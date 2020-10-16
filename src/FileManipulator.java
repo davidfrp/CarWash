@@ -28,6 +28,10 @@ public class FileManipulator {
     public String readFile(int lineNumber, boolean decoded) throws IOException {     //read from file
         String pathToFile = "";
 
+        if(System.getProperty("os.name").equals("Mac OS X")){
+            makeFileDialog("Please insert a wash card.", FileDialog.LOAD, "card");
+        }
+
         JFileChooser loadFileChooser = makeJFileChooser("Please insert a wash card.", 1);
         loadFileChooser.setFileFilter(new FileNameExtensionFilter(washCardFileNameSuggestion, washCardFileNameExtension));
         loadFileChooser.requestFocus();
@@ -55,15 +59,14 @@ public class FileManipulator {
 
         if (System.getProperty("os.name").equals("Mac OS X")) {
 
-            FileDialog fd = makeFileDialog("Please insert your credit card.", FileDialog.SAVE);
-            fd.setFile("*.txt");
+            FileDialog fd = makeFileDialog("Please insert your credit card.", FileDialog.SAVE, "txt");
             filename = fd.getFile();
             fileToSave = new File(fd.getFile());
             if (filename == "") {
                 System.out.println("Window was closed. No credit card was inserted.");
             } else {
-                if (!filename.endsWith("text")) {                                                         //in case the file the user specified does *not* end with file-ending, the program adds the file-ending (Windows like file-endings).
-                    filename = fileToSave.getAbsolutePath() + ".text";
+                if (!filename.endsWith("txt")) {                                                         //in case the file the user specified does *not* end with file-ending, the program adds the file-ending (Windows like file-endings).
+                    filename = fileToSave.getAbsolutePath() + ".txt";
                 }
 
                 try {
@@ -133,7 +136,7 @@ public class FileManipulator {
 
         if(System.getProperty("os.name").equals("Mac OS X")){
 
-            FileDialog fd = makeFileDialog("Please insert your credit card.", FileDialog.LOAD);
+            FileDialog fd = makeFileDialog("Please insert your credit card.", FileDialog.LOAD, "card");
             filename = fd.getFile();
             if(filename==""){
                 System.out.println("Window was closed. No credit card was inserted.");
@@ -167,11 +170,11 @@ public class FileManipulator {
         }
     }
 
-    private FileDialog makeFileDialog(String dialogTitle, int dialogtype){
+    private FileDialog makeFileDialog(String dialogTitle, int dialogtype, String ending){
         FileDialog fd = new FileDialog(new JFrame(), dialogTitle, dialogtype);
         fd.setDirectory(userHome);
         fd.setVisible(true);
-        fd.setFilenameFilter((dir,name) -> name.endsWith("ending"));
+        fd.setFilenameFilter((dir,name) -> name.endsWith(ending));
         return fd;
     }
 
