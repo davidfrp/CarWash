@@ -91,10 +91,10 @@ public class FileManipulator {
         }
     }
 
-    public void writeFile(String pathToFile, String input, boolean decoded) throws IOException {
+    public void writeFile(String pathToFile, String input, boolean encoded) throws IOException {
         String encodedString = Base64.getEncoder().encodeToString(input.getBytes());  //encode base 64
         FileWriter writer = new FileWriter(pathToFile);
-        if (decoded) {
+        if (encoded) {
             writer.write(encodedString);
         } else {
             writer.write(input);
