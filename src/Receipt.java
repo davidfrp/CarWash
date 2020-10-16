@@ -5,27 +5,47 @@ public class Receipt {
     private CreditCard creditCard;
     private Wash wash;
     private double rechargeAmount;
-    private boolean washReceipt;
-    private final int desiredLength = 56;
+    private boolean isWashReceipt;
+    private final int DESIRED_LENGTH = 56;
 
-    public Receipt(Wash wash, boolean washReceipt){
-        this.washReceipt = washReceipt;
+    /**
+     * A car wash receipt.
+     * @param wash          represent a car wash.
+     * @param isWashReceipt whether the receipt is for a car wash.
+     */
+    public Receipt(Wash wash, boolean isWashReceipt) {
+        this.isWashReceipt = isWashReceipt;
         this.wash = wash;
     }
 
-    public Receipt(double rechargeAmount, CreditCard creditCard, boolean washReceipt){
-        this.washReceipt = washReceipt;
+    /**
+     * A car wash receipt.
+     * @param rechargeAmount amount that was recharged.
+     * @param creditCard     credit card used.
+     * @param isWashReceipt  whether the receipt is for a car wash.
+     */
+    public Receipt(double rechargeAmount, CreditCard creditCard, boolean isWashReceipt) {
+        this.isWashReceipt = isWashReceipt;
         this.rechargeAmount = rechargeAmount;
         this.creditCard = creditCard;
     }
 
-    private String thankYou(){
-        if(washReceipt){
+    /**
+     * Gets a thank you notice.
+     * @return a "thank you" message.
+     */
+    private String makeThankYou() {
+        if (isWashReceipt) {
             return "\t\t\tThank you for washing your car at\n";
         }
-        else return "\t\t\tThank you for your purchase.\n";
+
+        return "\t\t\tThank you for your purchase.\n";
     }
 
+    /**
+     * Gets the SuperShine logo in full on ASCII art style.
+     * @return the supershine logo as a String.
+     */
     private String makeLogo() {
         return  "   _____                       _____ _     _            \n" +
                 "  / ____|                     / ____| |   (_)           \n" +
@@ -37,32 +57,41 @@ public class Receipt {
                 "              |_|";
     }
 
+    /**
+     * Makes a separator for the receipt.
+     * @param desiredLength wanted length of the separator.
+     * @return              a String containing the separator line.
+     */
     private String makeSeparator(int desiredLength) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < desiredLength; i++) {
-            sb.append("=");
-        }
-        return sb.toString();
+        return "=".repeat(Math.max(0, desiredLength));
     }
 
+    /**
+     * Gets the receipt.
+     * @return a String containing the receipt.
+     */
     @Override
     public String toString() {
-        if(washReceipt) {
-            return "" + thankYou() + makeLogo() + "\n" + makeSeparator(desiredLength) + "\n" +
+        if(isWashReceipt) {
+            return "" + makeThankYou() + makeLogo() + "\n" + makeSeparator(DESIRED_LENGTH) + "\n" +
                     "Type of Wash:" + wash.getType().toString() +                       "\n" +
                     "Price: " + wash.getPrice() + "DKK" +                               "\n" +
                     "Your purchase was made at: " + getPrintTime();
         }
-        else{
-            return ""+ thankYou() + makeLogo() + "\n" + makeSeparator(desiredLength) + "\n" +
+        else {
+            return ""+ makeThankYou() + makeLogo() + "\n" + makeSeparator(DESIRED_LENGTH) + "\n" +
                     "" + getPrintTime()                                              + "\n" +
                     "\nPurchase\tDKK:\t" + rechargeAmount                            + "\n\n" +
-                    "CREDIT CARD: XXXX XXXX XXXX " + creditCard.getCreditCardNo()    + "\n" +
-                    makeSeparator(desiredLength)                                     + "\n";
+                    "CREDIT CARD: XXXX XXXX XXXX " + creditCard.getCreditCardNumber()    + "\n" +
+                    makeSeparator(DESIRED_LENGTH)                                     + "\n";
         }
     }
 
-    private String getPrintTime(){
+    /**
+     * Gets the current time and returns it in a human-readable format.
+     * @return a String containing the date and time of execution.
+     */
+    private String getPrintTime() {
         return new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss").format(new Date());
     }
 }

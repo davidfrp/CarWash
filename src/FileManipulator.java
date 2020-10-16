@@ -11,11 +11,11 @@ import java.util.List;
 
 public class FileManipulator {
 
-    private final String userHome = System.getProperty("user.home");
-    private final String washCardFileNameExtension = "washcard";
-    private final String washCardFileNameSuggestion = "Wash Card";
-    private final String creditCardFileNameExtension = "card";
-    private final String creditCardFileNameSuggestion = "Credit Card";
+    private final String PATH_USER_HOME = System.getProperty("user.home");
+    private final String WASH_CARD_FILE_EXTENSION = "washcard";
+    private final String WASH_CARD_FILE_NAME_SUGGESTION = "Wash Card";
+    private final String CREDIT_CARD_FILE_EXTENSION = "card";
+    private final String CREDIT_CARD_FILE_NAME_SUGGESTION = "Credit Card";
 
     public FileManipulator() {
         try {
@@ -31,12 +31,12 @@ public class FileManipulator {
         if (System.getProperty("os.name").equals("Mac OS X")) {
             FileDialog fd = makeFileDialog("Please insert a wash card.", FileDialog.LOAD, "card");
             pathToFile = fd.getFile();
-            if (pathToFile == "") {
+            if (pathToFile.isEmpty()) {
                 System.out.println("Window was closed. No wash card was inserted");
             }
         } else {
             JFileChooser loadFileChooser = makeJFileChooser("Please insert a wash card.", 1);
-            loadFileChooser.setFileFilter(new FileNameExtensionFilter(washCardFileNameSuggestion, washCardFileNameExtension));
+            loadFileChooser.setFileFilter(new FileNameExtensionFilter(WASH_CARD_FILE_NAME_SUGGESTION, WASH_CARD_FILE_EXTENSION));
             loadFileChooser.requestFocus();
             int selectedFile = loadFileChooser.showOpenDialog(null);
 
@@ -66,7 +66,7 @@ public class FileManipulator {
             FileDialog fd = makeFileDialog("Please save your receipt somewhere safe.", FileDialog.SAVE, "txt");
             filename = fd.getFile();
             fileToSave = new File(fd.getFile());
-            if (filename == "") {
+            if (filename.isEmpty()) {
                 System.out.println("Window was closed. No receipt printed.");
             } else {
                 if (!filename.endsWith("txt")) {                                                         //in case the file the user specified does *not* end with file-ending, the program adds the file-ending (Windows like file-endings).
@@ -107,8 +107,8 @@ public class FileManipulator {
                 filename = fileToSave.getAbsolutePath();
             }
 
-            if (!filename.endsWith("text")) {                                                         //in case the file the user specified does *not* end with file-ending, the program adds the file-ending (Windows like file-endings).
-                filename = fileToSave.getAbsolutePath() + ".text";
+            if (!filename.endsWith("text")) { //in case the file the user specified does *not* end with file-ending, the program adds the file-ending (Windows like file-endings).
+                filename = fileToSave.getAbsolutePath() + ".txt";
             }
 
             try {
@@ -142,7 +142,7 @@ public class FileManipulator {
 
             FileDialog fd = makeFileDialog("Please insert your credit card.", FileDialog.LOAD, "card");
             filename = fd.getFile();
-            if (filename == "") {
+            if (filename.isEmpty()) {
                 System.out.println("Window was closed. No credit card was inserted.");
                 return null;
             }
@@ -150,7 +150,7 @@ public class FileManipulator {
         } else {
             /* GUI file chooser */
             JFileChooser loadFileChooser = makeJFileChooser("Please insert your credit card.", 1);          //1 is open dialog type (load file).
-            loadFileChooser.setFileFilter(new FileNameExtensionFilter(creditCardFileNameSuggestion, creditCardFileNameExtension));
+            loadFileChooser.setFileFilter(new FileNameExtensionFilter(CREDIT_CARD_FILE_NAME_SUGGESTION, CREDIT_CARD_FILE_EXTENSION));
             int selectedFile = loadFileChooser.showOpenDialog(null);                                                   //opens the dialog window and returns an integer depending on what the user did (approve, cancel, abort).
 
             if (selectedFile == JFileChooser.APPROVE_OPTION) {                                                               //if 'open' was pressed.
@@ -176,14 +176,14 @@ public class FileManipulator {
 
     private FileDialog makeFileDialog(String dialogTitle, int dialogtype, String ending) {
         FileDialog fd = new FileDialog(new JFrame(), dialogTitle, dialogtype);
-        fd.setDirectory(userHome);
+        fd.setDirectory(PATH_USER_HOME);
         fd.setVisible(true);
         fd.setFilenameFilter((dir, name) -> name.endsWith(ending));
         return fd;
     }
 
     private JFileChooser makeJFileChooser(String dialogTitle, int dialogType) {
-        JFileChooser fileChooser = new JFileChooser(userHome, FileSystemView.getFileSystemView());                        //creates a new dialog windows which starts in the users home folder.
+        JFileChooser fileChooser = new JFileChooser(PATH_USER_HOME, FileSystemView.getFileSystemView());                        //creates a new dialog windows which starts in the users home folder.
         fileChooser.setDialogTitle(dialogTitle);
         fileChooser.setDialogType(dialogType);
         fileChooser.setMultiSelectionEnabled(false);                                                                      //disable the option for selecting multiple files in dialog window.

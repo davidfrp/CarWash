@@ -1,23 +1,40 @@
 import java.util.Random;
 
 public class WashCard {
-    private int ownerID;
-    private long cardID;
+    private int ownerId;
+    private long cardId;
 
+    /**
+     * A car wash WashCard.
+     * @param ownerID the customer id of the owner.
+     */
     public WashCard(int ownerID) {
-        this.ownerID = ownerID;
-        this.cardID = generateCardID();
+        this.ownerId = ownerID;
+        this.cardId = generateCardID();
     }
 
-    private long generateCardID(){
+    /**
+     * Generates a random id.
+     * TODO: make id generation return unique ids.
+     * @return random id.
+     */
+    private long generateCardID() {
         return new Random().nextLong();
     }
 
-    public int getOwnerID() {
-        return ownerID;
+    /**
+     * Gets the id of the WashCard owner.
+     * @return owner id.
+     */
+    public int getOwnerId() {
+        return ownerId;
     }
 
-    public long getCardID() {
-        return cardID;
+    /**
+     * Gets the id of the WashCard.
+     * @return wash card id.
+     */
+    public long getCardId() {
+        return cardId;
     }
 }
