@@ -59,11 +59,11 @@ public class FileManipulator {
 
         if (System.getProperty("os.name").equals("Mac OS X")) {
 
-            FileDialog fd = makeFileDialog("Please insert your credit card.", FileDialog.SAVE, "txt");
+            FileDialog fd = makeFileDialog("Please save your receipt somewhere safe.", FileDialog.SAVE, "txt");
             filename = fd.getFile();
             fileToSave = new File(fd.getFile());
             if (filename == "") {
-                System.out.println("Window was closed. No credit card was inserted.");
+                System.out.println("Window was closed. No receipt printed.");
             } else {
                 if (!filename.endsWith("txt")) {                                                         //in case the file the user specified does *not* end with file-ending, the program adds the file-ending (Windows like file-endings).
                     filename = fileToSave.getAbsolutePath() + ".txt";
