@@ -1,13 +1,11 @@
 import java.util.Random;
 
 public class Customer {
-    //Fields
     private final String name;
     private final int id;
     private final boolean hasFDMMembership;
     private double balance;
 
-    //Getters
     public String getName() {
         return name;
     }
@@ -23,7 +21,6 @@ public class Customer {
         return hasFDMMembership;
     }
 
-    //Setters
     //*sets* the balance
     public void setBalance(double balance) {
         this.balance = balance;

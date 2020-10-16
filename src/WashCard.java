@@ -1,11 +1,12 @@
 import java.util.Random;
 
 public class WashCard {
-    int ownerID;
-    long cardID = generateCardID();
+    private int ownerID;
+    private long cardID;
 
     public WashCard(int ownerID) {
         this.ownerID = ownerID;
+        this.cardID = generateCardID();
     }
 
     private long generateCardID(){

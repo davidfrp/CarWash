@@ -41,6 +41,4 @@ public class Main {
 
         return temp;
     }
-
-
 }
