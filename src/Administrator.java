@@ -1,7 +1,7 @@
 public class Administrator {
-    private String name;        //only required field for admins
+    private String name;
 
-    public Administrator(String name) { //Constructor
+    public Administrator(String name) {
         this.name = name;
     }
 }

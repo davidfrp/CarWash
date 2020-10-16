@@ -11,20 +11,20 @@ public class Statistics {
                 "Standard: " + standard;
     }
 
-    public void logWash(WashType  washtype){    //Log wash and increase field by one
-        switch (washtype.getType()){
-            case "ECONOMY":
+    public void logWash(Wash wash){
+        switch (wash.getType()){
+            case ECONOMY:
                 economy++;
                 break;
-            case "STANDARD":
+            case STANDARD:
                 standard++;
                 break;
-            case "DELUXE":
+            case DELUXE:
                 deLuxe++;
                 break;
             default:
                 try {
-                    throw new StatisticsException("Error with adding wash to statistics");  //Error exception
+                    throw new StatisticsException("Error when adding wash to statistics.");
                 } catch (StatisticsException e) {
                     e.printStackTrace();
                 }
