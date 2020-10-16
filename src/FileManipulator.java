@@ -52,7 +52,7 @@ public class FileManipulator {
         String filename;
 
         JFileChooser saveFileChooser = makeFileChooser("Please save your receipt somewhere safe.", 2);
-        saveFileChooser.setFileFilter(new FileNameExtensionFilter("Text Receipt", "text"));
+        saveFileChooser.setFileFilter(new FileNameExtensionFilter("Text Receipt", "txt"));
         int selectedFile = saveFileChooser.showSaveDialog(null);
 
         if (selectedFile == JFileChooser.APPROVE_OPTION) {                                                                //if 'save' was pressed.
